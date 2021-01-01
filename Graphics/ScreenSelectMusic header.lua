@@ -4,6 +4,7 @@ local bmt_actor
 
 local hours, mins, secs
 local hmmss = "%d:%02d:%02d"
+local DateFormat = "%02d.%02d.%02d %02d:%02d:%02d"
 
 -- prefer the engine's SecondsToHMMSS()
 -- but define it ourselves if it isn't provided by this version of SM5
@@ -17,7 +18,6 @@ end
 
 local UpdateTimer = function(af, dt)
 	if ThemePrefs.Get("ShowDateTimeOnHeader") then
-		local DateFormat = "%02d.%02d.%02d     %02d:%02d:%02d"
 		bmt_actor:settext(DateFormat:format(DayOfMonth(), MonthOfYear()+1, Year(), Hour(), Minute(), Second()))
 	else 
 		local seconds = GetTimeSinceStart() - SL.Global.TimeAtSessionStart
