@@ -3,17 +3,28 @@ local player, controller = unpack(...)
 local pn = ToEnumShortString(player)
 local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 
+
+local isFAPlus = SL.Global.GameMode == "FA+"
+
 local TapNoteScores = {
 	Types = { 'W1', 'W2', 'W3', 'W4', 'W5', 'Miss' },
 	-- x values for P1 and P2
 	x = { P1=64, P2=94 }
 }
 
-local RadarCategories = {
+local RadarCategoriesFAPlus = {
+	Types = { 'Holds', 'Mines', 'Rolls' },
+	-- x values for P1 and P2
+	x = { P1=-180, P2=218 }
+}
+
+local RadarCategoriesITG = {
 	Types = { 'Holds', 'Mines', 'Hands', 'Rolls' },
 	-- x values for P1 and P2
 	x = { P1=-180, P2=218 }
 }
+
+local RadarCategories = isFAPlus and RadarCategoriesFAPlus or RadarCategoriesITG
 
 
 local t = Def.ActorFrame{
@@ -64,6 +75,7 @@ for i=1,#TapNoteScores.Types do
 
 end
 
+local numbersY = isFAPlus and 93 or 53
 
 -- then handle holds, mines, hands, rolls
 for index, RCType in ipairs(RadarCategories.Types) do
@@ -76,7 +88,7 @@ for index, RCType in ipairs(RadarCategories.Types) do
 		Font="Wendy/_ScreenEvaluation numbers",
 		InitCommand=function(self) self:zoom(0.5):horizalign(right):Load("RollingNumbersEvaluationB") end,
 		BeginCommand=function(self)
-			self:y((index-1)*35 + 53)
+			self:y((index-1)*35 + numbersY)
 			self:x( RadarCategories.x[ToEnumShortString(controller)] )
 			self:targetnumber(performance)
 		end
@@ -87,7 +99,7 @@ for index, RCType in ipairs(RadarCategories.Types) do
 		Text="/",
 		InitCommand=function(self) self:diffuse(color("#5A6166")):zoom(1.25):horizalign(right) end,
 		BeginCommand=function(self)
-			self:y((index-1)*35 + 53)
+			self:y((index-1)*35 + numbersY)
 			self:x( ((controller == PLAYER_1) and -168) or 230 )
 		end
 	}
@@ -96,7 +108,7 @@ for index, RCType in ipairs(RadarCategories.Types) do
 	t[#t+1] = LoadFont("Wendy/_ScreenEvaluation numbers")..{
 		InitCommand=function(self) self:zoom(0.5):horizalign(right) end,
 		BeginCommand=function(self)
-			self:y((index-1)*35 + 53)
+			self:y((index-1)*35 + numbersY)
 			self:x( ((controller == PLAYER_1) and -114) or 286 )
 			self:settext(("%03.0f"):format(possible))
 			local leadingZeroAttr = { Length=3-tonumber(tostring(possible):len()), Diffuse=color("#5A6166") }

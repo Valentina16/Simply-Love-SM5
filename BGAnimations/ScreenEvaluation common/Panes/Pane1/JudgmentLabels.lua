@@ -1,5 +1,6 @@
 local player, controller = unpack(...)
 
+local isFAPlus = SL.Global.GameMode == "FA+"
 local pn = ToEnumShortString(player)
 local stats = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
 
@@ -19,19 +20,35 @@ local TapNoteScores = {}
 TapNoteScores.Types = { 'W1', 'W2', 'W3', 'W4', 'W5', 'Miss' }
 TapNoteScores.Names = map(GetTNSStringFromTheme, TapNoteScores.Types)
 
-local RadarCategories = {
+local RadarCategoriesFAPlus = {
+	THEME:GetString("ScreenEvaluation", 'Holds'),
+	THEME:GetString("ScreenEvaluation", 'Mines'),
+	THEME:GetString("ScreenEvaluation", 'Rolls')
+}
+
+local RadarCategoriesITG = {
 	THEME:GetString("ScreenEvaluation", 'Holds'),
 	THEME:GetString("ScreenEvaluation", 'Mines'),
 	THEME:GetString("ScreenEvaluation", 'Hands'),
 	THEME:GetString("ScreenEvaluation", 'Rolls')
 }
 
-local EnglishRadarCategories = {
+local RadarCategories = isFAPlus and RadarCategoriesFAPlus or RadarCategoriesITG
+
+local EnglishRadarCategoriesFAPlus = {
+	[THEME:GetString("ScreenEvaluation", 'Holds')] = "Holds",
+	[THEME:GetString("ScreenEvaluation", 'Mines')] = "Mines",
+	[THEME:GetString("ScreenEvaluation", 'Rolls')] = "Rolls",
+}
+
+local EnglishRadarCategoriesITG = {
 	[THEME:GetString("ScreenEvaluation", 'Holds')] = "Holds",
 	[THEME:GetString("ScreenEvaluation", 'Mines')] = "Mines",
 	[THEME:GetString("ScreenEvaluation", 'Hands')] = "Hands",
 	[THEME:GetString("ScreenEvaluation", 'Rolls')] = "Rolls",
 }
+
+local EnglishRadarCategories = isFAPlus and EnglishRadarCategoriesFAPlus or EnglishRadarCategoriesITG
 
 local scores_table = {}
 for index, window in ipairs(TapNoteScores.Types) do
@@ -65,6 +82,8 @@ for i=1, #TapNoteScores.Types do
 	end
 end
 
+local labelsY = isFAPlus and 75 or 43
+
 -- labels: holds, mines, hands, rolls
 for index, label in ipairs(RadarCategories) do
 
@@ -76,7 +95,7 @@ for index, label in ipairs(RadarCategories) do
 		InitCommand=function(self) self:zoom(0.833):horizalign(right) end,
 		BeginCommand=function(self)
 			self:x( (controller == PLAYER_1 and -160) or 90 )
-			self:y((index-1)*28 + 41)
+			self:y((index-1)*28 + labelsY)
 		end
 	}
 end
