@@ -208,6 +208,7 @@ SL = {
 			TimingWindowSecondsRoll=0.350000,
 		},
 		["FA+"] = {
+			TimingWindowScale=1,
 			TimingWindowAdd=0.0015,
 			RegenComboAfterMiss=5,
 			MaxRegenComboAfterMiss=10,
@@ -218,7 +219,7 @@ SL = {
 			AllowW1="AllowW1_Everywhere",
 			SubSortByNumSteps=true,
 
-			TimingWindowSecondsW1=0.011000,
+			TimingWindowSecondsW1=0.013500,
 			TimingWindowSecondsW2=0.021500,
 			TimingWindowSecondsW3=0.043000,
 			TimingWindowSecondsW4=0.102000,
