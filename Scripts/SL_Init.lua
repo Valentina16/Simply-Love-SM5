@@ -32,7 +32,8 @@ local PlayerDefaults = {
 				Pacemaker = false,
 				LifeMeterType = "Standard",
 				MissBecauseHeld = false,
-				NPSGraphAtTop = false
+				NPSGraphAtTop = false,
+				EarlyLateErrorBar = false
 			}
 			self.Streams = {
 				SongDir = nil,

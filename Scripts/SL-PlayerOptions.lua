@@ -588,8 +588,16 @@ local Overrides = {
 				if list[3] then SL.Global.ScreenAfter.PlayerOptions3 = "ScreenPlayerOptions2" end
 			end
 		end
-	}
+	},
 	-------------------------------------------------------------------------
+	EarlyLateErrorBar = {
+		Values = {false, true},
+		Choices = {"Disable", "Enable"},
+		ExportOnChange = true,
+		LayoutType = "ShowAllInRow",
+		OneChoiceForAllPlayers = false,
+		SelectType = "SelectOne"
+	}
 }
 
 

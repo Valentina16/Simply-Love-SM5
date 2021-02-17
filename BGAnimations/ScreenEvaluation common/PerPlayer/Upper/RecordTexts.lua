@@ -12,7 +12,7 @@ local HighScoreIndex = {
 
 local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 local xPositionRecordPlayer1 = StarGradeCounterActive and 0 or -45
-local xPositionRecordPlayer2 = StarGradeCounterActive and 140 or 95
+local xPositionRecordPlayer2 = StarGradeCounterActive and 45 or 95
 
 -- ---------------------------------------------
 -- GetMachineHighScoreIndex() will always return -1 in EventMode, so...
