@@ -1,6 +1,6 @@
 local player = ...
 local info
-local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 local xPosition = StarGradeCounterActive and 70 or 115
 
 -- in CourseMode, GetStepsCredit() will return a table of info that

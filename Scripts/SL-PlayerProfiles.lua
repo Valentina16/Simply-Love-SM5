@@ -46,9 +46,7 @@ local profile_whitelist = {
 	PlayerOptionsString = "string",
 
 	EvalPanePrimary   = "number",
-	EvalPaneSecondary = "number",
-
-	StarGradeCounter = "boolean"
+	EvalPaneSecondary = "number"
 }
 
 -- -----------------------------------------------------------------------
@@ -119,9 +117,11 @@ LoadProfileCustom = function(profile, dir)
 		end
 	end
 
-	SL[pn].StarsGradesCount = {}
+	for i = 1, 4 do
+		SL[pn].StarsGradesCount[i] = "0";
+	end
 
-	if pn and FILEMAN:DoesFileExist(dir .. "/StarsCounts.txt") then
+	if FILEMAN:DoesFileExist(dir .. "/StarsCounts.txt") then
 		local StarsFile = File.Read(dir .. "/StarsCounts.txt")
 		local StarsLines = split("\n", StarsFile)
 

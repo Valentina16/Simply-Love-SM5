@@ -10,7 +10,7 @@ local HighScoreIndex = {
 	Personal = pss:GetPersonalHighScoreIndex()
 }
 
-local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 local xPositionRecordPlayer1 = StarGradeCounterActive and 0 or -45
 local xPositionRecordPlayer2 = StarGradeCounterActive and 140 or 95
 

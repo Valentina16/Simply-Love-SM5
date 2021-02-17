@@ -4,7 +4,7 @@ local playerStats = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 local grade = playerStats:GetGrade()
 
 -- Calc difference between the card if active
-local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 local xPositionGrade = StarGradeCounterActive and 25 or 70
 
 -- "I passd with a q though."

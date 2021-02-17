@@ -215,6 +215,13 @@ SL_CustomPrefs.Get = function()
 			Default = false,
 			Choices =  { THEME:GetString("ThemePrefs","Yes"), THEME:GetString("ThemePrefs", "No") },
 			Values	= { true, false }
+		},
+
+		-- Enable Profile Card with count of earned stars
+		ShowStarsCountsOnEval = {
+			Default = false,
+			Choices =  { THEME:GetString("ThemePrefs","Yes"), THEME:GetString("ThemePrefs", "No") },
+			Values	= { true, false }
 		}
 	}
 end

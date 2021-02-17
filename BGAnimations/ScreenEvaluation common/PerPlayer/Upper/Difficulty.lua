@@ -1,6 +1,6 @@
 local player = ...
 local pn = PlayerNumber:Reverse()[player]
-local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 local xPositionText = StarGradeCounterActive and 70 or 115
 local xPositionNumber = StarGradeCounterActive and 89.5 or 134.5
 
