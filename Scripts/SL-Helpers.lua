@@ -549,3 +549,18 @@ GetComboFonts = function()
 
 	return fonts
 end
+
+ProfileCardLowerAF = function(pn)
+	local ProfileCardFrame = Def.ActorFrame{}
+    local positions = {{-34, 2}, {12, 2}, {-34, 24}, {12, 24}}
+	for i = 1, 4 do
+		ProfileCardFrame[#ProfileCardFrame+1] = LoadActor(THEME:GetPathG("", "_GradesSmall/LetterGrade.lua"), {grade = i, itg = true})..{
+			OnCommand = function(self) self:zoom(0.2):xy(positions[i][1], positions[i][2]) end
+		}
+		ProfileCardFrame[#ProfileCardFrame+1] = LoadFont("Common Normal")..{
+			Text = tostring(SL[ToEnumShortString(pn)].StarsGradesCount[i]),
+			InitCommand = function(self) self:zoom(0.75):xy(positions[i][1] + 32, positions[i][2]+1)
+				:maxwidth(20/0.75):horizalign("right") end
+		}
+	end
+end
