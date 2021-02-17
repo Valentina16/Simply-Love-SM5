@@ -2,8 +2,6 @@ local args = ...
 local grade = args.grade
 local itg = args.itg
 
-SM(grade)
-
 -- conditionally return an actor for the grade and mode passed in.
 -- for itg we just return a sprite with the index pertaining to the grade, since we're just highjacking
 -- musicwheelitem grades for now (heh).
@@ -12,24 +10,24 @@ SM(grade)
 if type(grade) == "number" then grade = string.format("Grade_Tier%02d", grade) end
 if grade == "Failed" or grade == "Fail" or grade == "Grade_Tier18" then grade = "Grade_Failed" end
 
-local af = Def.ActorFrame{}
+local StarsGradeFrame = Def.ActorFrame{}
 
 local unplayedtext = LoadFont("Common Normal")..{ Text = "None", InitCommand = function(self) self:zoom(3) end }
 
 if grade == "Grade_Tier99" then
-    af[#af+1] = unplayedtext
-    return af
+    StarsGradeFrame[#StarsGradeFrame+1] = unplayedtext
+    return StarsGradeFrame
 end
 
 if itg then
     local frame = 17
     if grade ~= "Grade_Failed" then frame = tonumber((grade:gsub("Grade_Tier", ""))) - 1 end
-    af[#af+1] = Def.Sprite{
+    StarsGradeFrame[#StarsGradeFrame+1] = Def.Sprite{
         -- IM DRINKIN A SPRITE LOL
         Texture = "grades 1x18.png",
         InitCommand = function(self) self:animate(false):setstate(frame) end
     }
-    return af
+    return StarsGradeFrame
 end
 
 local WFFrames = {
@@ -42,12 +40,12 @@ local WFFrames = {
 
 if grade ~= "Grade_Tier02" and grade ~= "Grade_Tier03" then
     local frame = WFFrames[grade]
-    af[#af+1] = Def.Sprite{
+    StarsGradeFrame[#StarsGradeFrame+1] = Def.Sprite{
         -- IM DRINKIN A SPRITE LOL
         Texture = "grades 1x18.png",
         InitCommand = function(self) self:animate(false):setstate(frame) end
     }
-    return af
+    return StarsGradeFrame
 else
     local placements = {
         Grade_Tier02 = {0, -40, 40},
@@ -55,15 +53,15 @@ else
     }
 
     for p in ivalues(placements[grade]) do
-        af[#af+1] = Def.Sprite{
+        StarsGradeFrame[#StarsGradeFrame+1] = Def.Sprite{
             -- IM DRINKIN A SPRITE LOL
             Texture = "grades 1x18.png",
             InitCommand = function(self) self:animate(false):setstate(8):x(p) end
         }
     end
 
-    return af
+    return StarsGradeFrame
 end
 
-af[#af+1] = unplayedtext
-return af
+StarsGradeFrame[#StarsGradeFrame+1] = unplayedtext
+return StarsGradeFrame

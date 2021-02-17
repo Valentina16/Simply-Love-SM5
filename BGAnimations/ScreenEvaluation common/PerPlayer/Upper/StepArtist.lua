@@ -1,5 +1,7 @@
 local player = ...
 local info
+local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local xPosition = StarGradeCounterActive and 70 or 115
 
 -- in CourseMode, GetStepsCredit() will return a table of info that
 -- has as many entries as there are stepcharts in the course
@@ -18,7 +20,7 @@ end
 local marquee_index = 0
 
 return LoadFont("Common Normal")..{
-	InitCommand=function(self) self:zoom(0.7):xy(115,_screen.cy-80) end,
+	InitCommand=function(self) self:zoom(0.7):xy(xPosition,_screen.cy-80) end,
 	OnCommand=function(self)
 		-- darken the text for RainbowMode to make it more legible
 		if (ThemePrefs.Get("RainbowMode") and not HolidayCheer()) then self:diffuse(Color.Black) end

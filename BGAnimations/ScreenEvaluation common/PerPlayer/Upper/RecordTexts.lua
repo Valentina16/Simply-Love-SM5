@@ -10,6 +10,10 @@ local HighScoreIndex = {
 	Personal = pss:GetPersonalHighScoreIndex()
 }
 
+local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local xPositionRecordPlayer1 = StarGradeCounterActive and 0 or -45
+local xPositionRecordPlayer2 = StarGradeCounterActive and 140 or 95
+
 -- ---------------------------------------------
 -- GetMachineHighScoreIndex() will always return -1 in EventMode, so...
 
@@ -75,7 +79,7 @@ if EarnedMachineRecord or EarnedPersonalRecord then
 	local t = Def.ActorFrame{
 		InitCommand=function(self) self:zoom(0.225) end,
 		OnCommand=function(self)
-			self:x( player == PLAYER_1 and -45 or 95 )
+			self:x( player == PLAYER_1 and xPositionRecordPlayer1 or xPositionRecordPlayer2 )
 			self:y( 54 )
 		end
 	}

@@ -1,6 +1,6 @@
 local args = ...
 local player = args.player
-local LowerCardFrame = args.loweraf
+local LowerCardFrame = args.LowerCardFrame
 local PlayerNumber = tonumber(player:sub(-1))
 local profile = PROFILEMAN:GetProfile(player)
 local hassubtitle = false
@@ -11,8 +11,6 @@ if profile then
     local ppath = PROFILEMAN:GetProfileDir("ProfileSlot_Player"..PlayerNumber).."/avatar.png"
     if ppath == "/avatar.png" then guestprofile = true end
     if not guestprofile then FallbackImg = FILEMAN:DoesFileExist(ppath) and ppath or "fallbackav.png" end
-else
-
 end
 
 if not LowerCardFrame then LowerCardFrame = Def.ActorFrame{} end

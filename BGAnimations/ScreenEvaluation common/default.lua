@@ -41,9 +41,6 @@ t[#t+1] = LoadActor("./Shared/CasualHelpText.lua")
 -- Then, load player-specific actors.
 
 for player in ivalues(Players) do
-
-	if not SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
-	then
 		-- store player stats for later retrieval on EvaluationSummary and NameEntryTraditional
 		-- this doesn't draw anything to the screen, it just runs some code
 		t[#t+1] = LoadActor("./PerPlayer/Storage.lua", player)
@@ -55,36 +52,6 @@ for player in ivalues(Players) do
 		-- the per-player lower half of ScreenEvaluation, including:
 		-- judgment scatterplot, modifier list, disqualified text
 		t[#t+1] = LoadActor("./PerPlayer/Lower/default.lua", player)
-	else
-		t[#t+1] = Def.ActorFrame{
-			Name=ToEnumShortString(player).."_AF_Upper",
-			OnCommand=function(self)
-				if player == PLAYER_1 then
-					self:x(_screen.cx - 155)
-				elseif player == PLAYER_2 then
-					self:x(_screen.cx + 155)
-				end
-			end,
-			
-			-- store player stats for later retrieval on EvaluationSummary and NameEntryTraditional
-			-- this doesn't draw anything to the screen, it just runs some code
-			LoadActor("./PerPlayer/Storage.lua", player),
-
-			-- the per-player upper half of ScreenEvaluation, including: letter grade, nice
-			-- stepartist, difficulty text, difficulty meter, machine/personal HighScore text
-			LoadActor("./PerPlayer/Upper/default.lua", player),
-
-			-- profile card
-			LoadActor(THEME:GetPathG("", "_profilecard/profilecard.lua"), {player = player, 
-				loweraf = ProfileCardLowerAF(player)})..{
-					InitCommand = function(self) self:xy((player == PLAYER_1 and -1 or 1) * WideScale(104,168),100) end
-			}
-		}
-
-		-- the per-player lower half of ScreenEvaluation, including:
-		-- judgment scatterplot, modifier list, disqualified text
-		t[#t+1] = LoadActor("./PerPlayer/Lower/default.lua", player)
-	end
 end
 
 -- -----------------------------------------------------------------------

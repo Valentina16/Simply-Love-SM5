@@ -1,5 +1,8 @@
 local player = ...
 local pn = PlayerNumber:Reverse()[player]
+local StarGradeCounterActive = SL[ToEnumShortString(player)].ActiveModifiers.StarGradeCounter
+local xPositionText = StarGradeCounterActive and 70 or 115
+local xPositionNumber = StarGradeCounterActive and 89.5 or 134.5
 
 return Def.ActorFrame{
 
@@ -7,7 +10,7 @@ return Def.ActorFrame{
 	LoadFont("Common Normal")..{
 		InitCommand=function(self)
 			self:y(_screen.cy-64)
-			self:x(115 * (player==PLAYER_1 and -1 or 1))
+			self:x(xPositionText * (player==PLAYER_1 and -1 or 1))
 			self:halign(pn):zoom(0.7)
 			-- darken the text for RainbowMode to make it more legible
 			if (ThemePrefs.Get("RainbowMode") and not HolidayCheer()) then self:diffuse(Color.Black) end
@@ -32,7 +35,7 @@ return Def.ActorFrame{
 		InitCommand=function(self)
 			self:zoomto(30,30)
 			self:y( _screen.cy-71 )
-			self:x(134.5 * (player==PLAYER_1 and -1 or 1))
+			self:x(xPositionNumber * (player==PLAYER_1 and -1 or 1))
 
 			local currentSteps = GAMESTATE:GetCurrentSteps(player)
 			if currentSteps then
@@ -47,7 +50,7 @@ return Def.ActorFrame{
 		InitCommand=function(self)
 			self:diffuse(Color.Black):zoom( 0.4 )
 			self:y( _screen.cy-71 )
-			self:x(134.5 * (player==PLAYER_1 and -1 or 1))
+			self:x(xPositionNumber * (player==PLAYER_1 and -1 or 1))
 
 			local meter
 			if GAMESTATE:IsCourseMode() then

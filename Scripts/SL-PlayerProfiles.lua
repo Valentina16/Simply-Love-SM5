@@ -119,10 +119,11 @@ LoadProfileCustom = function(profile, dir)
 		end
 	end
 
+	SL[pn].StarsGradesCount = {}
+
 	if pn and FILEMAN:DoesFileExist(dir .. "/Count.stars") then
 		local StarsFile = File.Read(dir .. "/Count.stars")
 		local StarsLines = split("\n", StarsFile)
-		SL[pn].StarsGradesCount = {}
 
 		-- for each key/value pair read in from the player's profile
 		for k,v in pairs(StarsLines) do
