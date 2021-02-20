@@ -4,6 +4,9 @@ local player = ...
 local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 local xPosition = StarGradeCounterActive and 200 or 155
 
+-- Read the stars count file
+ReadStarsCountFile(player)
+
 local LoadProfileCard = function ()
 	if StarGradeCounterActive then
 		return LoadActor(THEME:GetPathG("", "_profilecard/profilecard.lua"), {player = player, LowerCardFrame = ProfileCardLowerAF()})..{

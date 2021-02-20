@@ -119,24 +119,6 @@ LoadProfileCustom = function(profile, dir)
 		end
 	end
 
-	if pn then
-		SL[pn].StarsGradesCount = {}
-		for i = 1, 4 do
-			SL[pn].StarsGradesCount[i] = "0";
-		end
-
-		if FILEMAN:DoesFileExist(dir .. "/StarsCounts.txt") then
-			local StarsFile = File.Read(dir .. "/StarsCounts.txt")
-			local StarsLines = split("\n", StarsFile)
-
-			-- for each key/value pair read in from the player's profile
-			for k,v in pairs(StarsLines) do
-				local TierValue = split(":", v)
-				SL[pn].StarsGradesCount[k] = TierValue[2];
-			end
-		end
-	end
-
 	return true
 end
 
@@ -228,4 +210,29 @@ GetPlayerAvatarPath = function(player)
 	local name = PROFILEMAN:GetProfile(player):GetDisplayName()
 
 	return GetAvatarPath(dir, name)
+end
+
+ReadStarsCountFile = function(player) 
+	if not ThemePrefs.Get("ShowStarsCountsOnEval") then return end
+
+	local PlayerNumber = ToEnumShortString(player)
+
+	if PlayerNumber then
+		SL[PlayerNumber].StarsGradesCount = {}
+		local ProfilePlayerDir = PROFILEMAN:GetProfileDir("ProfileSlot_Player"..tonumber(player:sub(-1)))
+		
+		if FILEMAN:DoesFileExist(ProfilePlayerDir .. "/StarsCounts.txt") then
+			local StarsFile = File.Read(ProfilePlayerDir .. "/StarsCounts.txt")
+			local StarsLines = split("\n", StarsFile)
+
+			-- for each key/value pair read in from the player's profile
+			for k,v in pairs(StarsLines) do
+				SL[PlayerNumber].StarsGradesCount[k] = tonumber(v);
+			end
+		else
+			for i = 1, 4 do
+				SL[PlayerNumber].StarsGradesCount[i] = 0;
+			end
+		end
+	end
 end
