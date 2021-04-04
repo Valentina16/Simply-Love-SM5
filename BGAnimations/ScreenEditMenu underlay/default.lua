@@ -49,7 +49,7 @@ local t = Def.ActorFrame{
 					end
 
 					if cursorY == rowYvalues[4] then
-						editMenu:GetChild("StepsDisplay"):GetChild("Meter"):diffuse( 0,0,0,1 )
+						editMenu:GetChild("StepsDisplay"):diffuse( 0,0,0,1 )
 					end
 					if cursorY == rowYvalues[6] then
 						editMenu:GetChild("StepsDisplaySource"):GetChild("Meter"):diffuse( 0,0,0,1 )
@@ -65,7 +65,7 @@ local t = Def.ActorFrame{
 					end
 
 					if cursorY ~= rowYvalues[4] then
-						editMenu:GetChild("StepsDisplay"):GetChild("Meter"):diffuse(1,1,1,1)
+						editMenu:GetChild("StepsDisplay"):diffuse(1,1,1,1)
 					end
 					if cursorY ~= rowYvalues[6] then
 						editMenu:GetChild("StepsDisplaySource"):GetChild("Meter"):diffuse(1,1,1,1)
@@ -97,39 +97,12 @@ local t = Def.ActorFrame{
 			if cursor then
 				local cursorY = cursor:GetY()
 				if cursorY == rowYvalues[4] then
-					editMenu:GetChild("StepsDisplay"):GetChild("Meter"):diffuse(0,0,0,1)
+					editMenu:GetChild("StepsDisplay"):diffuse(0,0,0,1)
 				end
 			end
 		end
 	end
 }
-
-t[#t+1] = Def.Actor{
-	InitCommand=function()
-		local str = ThemePrefs.Get("EditModeLastSeenSong")
-
-		if str ~= "" then
-			local song = SONGMAN:FindSong( str )
-			if song then
-				-- If a song was saved in ThemePrefs, set GAMESTATE's CurrentSong now
-				-- during Init.  In the engine's code, EditMenu::RefreshAll() is called
-				-- once at the end of EditMode::Load(), and uses GAMESTATE's current song.
-				GAMESTATE:SetCurrentSong( song )
-			end
-		end
-	end,
-	OffCommand=function()
-		local song = GAMESTATE:GetCurrentSong()
-
-		if song then
-			-- the string returned by song:GetSongDir() isn't usable by SONGMAN:FindSong()
-			local path = ("/%s/%s"):format(song:GetGroupName(), Basename(song:GetSongDir()))
-			ThemePrefs.Set("EditModeLastSeenSong", path)
-			ThemePrefs.Save()
-		end
-	end
-}
-
 
 -- the overall BG
 t[#t+1] = Def.Quad {
@@ -168,5 +141,12 @@ t[#t+1] = Def.Quad{
 t[#t+1] = Border(_screen.w*0.9, _screen.h*0.734, 2)..{
 	InitCommand=function(self) self:xy(_screen.cx, _screen.cy) end,
 }
+
+-- -----------------------------------------------------------------------
+
+t[#t+1] = LoadActor("./LastSeenSong.lua")
+
+-- -----------------------------------------------------------------------
+
 
 return t
