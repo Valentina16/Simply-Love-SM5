@@ -6,6 +6,13 @@ local pn = ToEnumShortString(player)
 local mods = SL[pn].ActiveModifiers
 local gmods = SL.Global.ActiveModifiers
 
+local disabledJudgement = {
+    TapNoteScore_W3 = mods.ErrorBarDisableW3,
+    TapNoteScore_W4 = mods.ErrorBarDisableW4,
+    TapNoteScore_W5 = mods.ErrorBarDisableW5
+}
+local disabledJudgementNumber = (mods.ErrorBarDisableW3 and 1 or 0) + (mods.ErrorBarDisableW4 and 1 or 0) + (mods.ErrorBarDisableW5 and 1 or 0)
+
 local barWidth = 160
 local barHeight = 10
 local tickWidth = 2
@@ -14,7 +21,7 @@ local numTicks = mods.ErrorBarMultiTick and 10 or 1
 local currentTick = 1
 
 local enabledTimingWindows = {}
-for i = 1, NumJudgmentsAvailable() do
+for i = 1, (NumJudgmentsAvailable() - disabledJudgementNumber) do
     if gmods.TimingWindows[i] then
         enabledTimingWindows[#enabledTimingWindows+1] = i
     end
@@ -38,6 +45,7 @@ local af = Def.ActorFrame{
     JudgmentMessageCommand = function(self, params)
         if params.Player ~= player then return end
         if params.HoldNoteScore then return end
+        if disabledJudgement[params.TapNoteScore] then return end
 
         local score = ToEnumShortString(params.TapNoteScore)
         if score == "W1" or score == "W2" or score == "W3" or score == "W4" or score == "W5" then

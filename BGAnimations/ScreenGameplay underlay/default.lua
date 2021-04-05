@@ -32,7 +32,6 @@ for player in ivalues(Players) do
 	t[#t+1] = LoadActor("./PerPlayer/TargetScore/default.lua", player)
 	-- t[#t+1] = LoadActor("./PerPlayer/SubtractiveScoring.lua", player)
 	t[#t+1] = LoadActor("./PerPlayer/SubtractiveScoring.lua", player, layout.SubtractiveScoring)
-	t[#t+1] = LoadActor("./PerPlayer/EarlyLate.lua", player)
 end
 
 -- add to the ActorFrame last; overlapped by StepStatistics otherwise

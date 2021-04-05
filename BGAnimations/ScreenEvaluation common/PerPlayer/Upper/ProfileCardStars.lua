@@ -1,12 +1,12 @@
 local player = ...
 local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
 
-if StarGradeCounterActive then return end
+if not StarGradeCounterActive then return end
 
 -- Read the stars count file
 ReadStarsCountFile(player)
 
-ProfileCardLowerAF = function()
+local ProfileCardLowerAF = function()
 	local ProfileCardFrame = Def.ActorFrame{}
     local positions = {{-34, 2}, {12, 2}, {-34, 24}, {12, 24}}
 	for i = 1, 4 do
@@ -22,6 +22,10 @@ ProfileCardLowerAF = function()
 	return ProfileCardFrame
 end
 
-return LoadActor(THEME:GetPathG("", "_profilecard/profilecard.lua"), {player = player, LowerCardFrame = ProfileCardLowerAF()})..{
+local t = Def.ActorFrame{}
+
+t[#t+1] = LoadActor(THEME:GetPathG("", "_profilecard/profilecard.lua"), {player = player, LowerCardFrame = ProfileCardLowerAF()})..{
     InitCommand = function(self) self:xy((player == PLAYER_1 and -1 or 1) * WideScale(104,168),100) end
 }
+
+return t

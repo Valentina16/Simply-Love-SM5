@@ -425,10 +425,10 @@ local Overrides = {
 			local IsUltraWide = (GetScreenAspectRatio() > 21/9)
 			local mpn = GAMESTATE:GetMasterPlayerNumber()
 
-			-- if not ultrawide, StepStats only in single (not versus, not double) 
+			-- if not ultrawide, StepStats only in single (not versus, not double)
 			-- OLD --> if (not IsUltraWide and style and style:GetName() ~= "single")
-			-- Avoid to remove StepStats also in versus, nothing seems changed on the screen style. 
-			-- If is not ultrawide the opt is anyway ignored, but the DataVisualizations 
+			-- Avoid to remove StepStats also in versus, nothing seems changed on the screen style.
+			-- If is not ultrawide the opt is anyway ignored, but the DataVisualizations
 			-- on UserPrefs doesn't change to None everytime the style used is "versus"
 			if (not IsUltraWide and style and style:GetName() == "double")
 			-- if ultrawide, StepStats only in single and versus (not double)
@@ -500,6 +500,35 @@ local Overrides = {
 	ErrorBarOptions = {
 		SelectType = "SelectMultiple",
 		Values = { "ErrorBarUp", "ErrorBarMultiTick" },
+	},
+	ErrorBarDisableJudgment = {
+		SelectType = "SelectMultiple",
+		Choices = function ()
+			local tns = "TapNoteScore" .. (SL.Global.GameMode=="ITG" and "" or SL.Global.GameMode)
+			local t = {}
+
+			t[1] = THEME:GetString(tns,"W5")
+			t[2] = THEME:GetString(tns,"W4")
+
+			if SL.Global.GameMode == "ITG"
+			then t[3] = THEME:GetString(tns,"W3")
+			end
+
+			return t
+		end,
+		LoadSelections = function(self, list, pn)
+			local mods = SL[ToEnumShortString(pn)].ActiveModifiers
+			list[1] = mods.ErrorBarDisableW5 or false
+			list[2] = mods.ErrorBarDisableW4 or false
+			list[3] = mods.ErrorBarDisableW3 or false
+			return list
+		end,
+		SaveSelections = function(self, list, pn)
+			local mods = GetModsAndPlayerOptions(pn)
+			mods.ErrorBarDisableW5 = list[1]
+			mods.ErrorBarDisableW4 = list[2]
+			mods.ErrorBarDisableW3 = list[3]
+		end,
 	},
 	-------------------------------------------------------------------------
 	MeasureCounter = {
@@ -625,15 +654,6 @@ local Overrides = {
 				if list[3] then SL.Global.ScreenAfter.PlayerOptions3 = "ScreenPlayerOptions2" end
 			end
 		end
-	},
-	-------------------------------------------------------------------------
-	EarlyLateErrorBar = {
-		Values = {false, true},
-		Choices = {"Disable", "Enable"},
-		ExportOnChange = true,
-		LayoutType = "ShowAllInRow",
-		OneChoiceForAllPlayers = false,
-		SelectType = "SelectOne"
 	}
 }
 

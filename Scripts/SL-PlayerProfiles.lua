@@ -52,6 +52,9 @@ local permitted_profile_settings = {
 	ErrorBar             = "string",
 	ErrorBarUp           = "boolean",
 	ErrorBarMultiTick    = "boolean",
+	ErrorBarDisableW5 	 = "boolean",
+	ErrorBarDisableW4 	 = "boolean",
+	ErrorBarDisableW3 	 = "boolean",
 
 
 	----------------------------------
@@ -62,9 +65,7 @@ local permitted_profile_settings = {
 	PlayerOptionsString = "string",
 
 	EvalPanePrimary   = "number",
-	EvalPaneSecondary = "number",
-
-	EarlyLateErrorBar = "boolean"
+	EvalPaneSecondary = "number"
 }
 
 -- -----------------------------------------------------------------------
@@ -243,11 +244,11 @@ ReadStarsCountFile = function(player)
 
 			-- for each key/value pair read in from the player's profile
 			for k,v in pairs(StarsLines) do
-				SL[PlayerNumber].StarsGradesCount[k] = tonumber(v);
+				SL[PlayerNumber].StarsGradesCount[k] = tonumber(v)
 			end
 		else
 			for i = 1, 4 do
-				SL[PlayerNumber].StarsGradesCount[i] = 0;
+				SL[PlayerNumber].StarsGradesCount[i] = 0
 			end
 		end
 	end

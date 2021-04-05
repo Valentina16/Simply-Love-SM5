@@ -85,11 +85,13 @@ local IsCranked = function()
 	return false
 end
 
+local StarGradeCounterActive = ThemePrefs.Get("ShowStarsCountsOnEval")
+local xPositionNicePlayer1 = StarGradeCounterActive and 25 or 70
 
 if IsNice() then
 	af[#af+1] = LoadActor(THEME:GetPathG("","nice.png"))..{
 		InitCommand=function(self)
-			self:xy(70, _screen.cy-134)
+			self:xy(xPositionNicePlayer1, _screen.cy-134)
 		end,
 		OnCommand=function(self)
 

@@ -33,10 +33,12 @@ local PlayerDefaults = {
 				LifeMeterType = "Standard",
 				MissBecauseHeld = false,
 				NPSGraphAtTop = false,
-				EarlyLateErrorBar = false,
 				ErrorBar = "None",
 				ErrorBarUp = false,
 				ErrorBarMultiTick = false,
+				ErrorBarDisableW5 = false,
+				ErrorBarDisableW4 = false,
+				ErrorBarDisableW3 = false
 			}
 			self.Streams = {
 				-- Chart identifiers for caching purposes.
