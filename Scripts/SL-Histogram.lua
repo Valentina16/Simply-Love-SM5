@@ -12,10 +12,8 @@ local function gen_vertices(player, width, height, desaturation)
 		Song = GAMESTATE:GetCurrentSong()
 	end
 	
-	if not Steps then return {} end
+	if not Steps or not Song then return {} end
 
-	-- There's also a notesPerMeasure argument, but we don't really care about it so it'll default to 16
-	-- even if we don't provide it.
 	-- This function does no work if we already have the data in SL.Streams cache.
 	ParseChartInfo(Steps, pn)
 	PeakNPS = SL[pn].Streams.PeakNPS
@@ -93,6 +91,15 @@ local function gen_vertices(player, width, height, desaturation)
 					verts[#verts+1] = {{x, y, 0}, upper}  -- top of graph (somewhere between blue and purple)
 				end
 			end
+		end
+
+		-- Insert a 0 NPS datapoint at the end of the graph, otherwise
+		-- the last measure will not have a nice downwards slope like
+		-- all the other measures but end abruptly at the start of the
+		-- measure.
+		if NPSperMeasure[#NPSperMeasure] ~= 0 then
+			verts[#verts+1] = {{width, 0, 0}, blue}
+			verts[#verts+1] = {{width, 0, 0}, blue}
 		end
 	end
 

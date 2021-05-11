@@ -50,7 +50,15 @@ local decorations = LoadActor(THEME:GetPathB("ScreenWithMenuElements", "decorati
 -- 			end
 -- 		end
 
--- 		self:diffuse(ThemePrefs.Get("RainbowMode") and Color.Black or Color.White)
+-- 		local textColor = Color.White
+-- 		if ThemePrefs.Get("RainbowMode") then
+-- 			textColor = Color.Black
+-- 		end
+-- 		if ThemePrefs.Get("VisualStyle") == "SRPG5" then
+-- 			textColor = color(SL.SRPG5.TextColor)
+-- 		end
+
+-- 		self:diffuse(textColor)
 -- 		self:playcommand("Refresh")
 -- 	end,
 -- 	RefreshCommand=function(self)
@@ -62,6 +70,6 @@ local decorations = LoadActor(THEME:GetPathB("ScreenWithMenuElements", "decorati
 -- -- finally, add the DateTimeAF to the decorations ActorFrame
 -- decorations[#decorations+1] = af
 
--- -- return the decorations ActorFrame so that evaluation screens get
--- -- a header, a footer, and a datetime
+-- return the decorations ActorFrame so that evaluation screens get
+-- a header, a footer, and a datetime
 return decorations
