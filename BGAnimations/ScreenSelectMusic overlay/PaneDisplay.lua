@@ -20,25 +20,20 @@ local GetSongAndSteps = function(player)
 end
 
 -- -----------------------------------------------------------------------
--- requires a profile (machine or player) as an argument
--- returns formatted strings for player tag (from ScreenNameEntry) and PercentScore
+local GetScoreFromProfile = function(profile, SongOrCourse, StepsOrTrail)
+	-- if we don't have everything we need, return nil
+	if not (profile and SongOrCourse and StepsOrTrail) then return nil end
 
-local GetNameAndScore = function(profile, SongOrCourse, StepsOrTrail)
-	-- if we don't have everything we need, return empty strings
-	if not (profile and SongOrCourse and StepsOrTrail) then return "","" end
+	return profile:GetHighScoreList(SongOrCourse, StepsOrTrail):GetHighScores()[1]
+end
 
-	local score, name
-	local topscore = profile:GetHighScoreList(SongOrCourse, StepsOrTrail):GetHighScores()[1]
-
-	if topscore then
-		score = FormatPercentScore( topscore:GetPercentDP() )
-		name = topscore:GetName()
-	else
-		score = "??.??%"
-		name = "----"
+local GetScoreForPlayer = function(player)
+	local highScore
+	if PROFILEMAN:IsPersistentProfile(player) then
+		local SongOrCourse, StepsOrTrail = GetSongAndSteps(player)
+		highScore = GetScoreFromProfile(PROFILEMAN:GetProfile(player), SongOrCourse, StepsOrTrail)
 	end
-
-	return score, name
+	return highScore
 end
 
 -- -----------------------------------------------------------------------
@@ -71,6 +66,16 @@ local GetScoresRequestProcessor = function(res, master)
 	-- have to update anything. We don't have to worry about courses here since
 	-- we don't run the RequestResponseActor in CourseMode.
 	if GAMESTATE:GetCurrentSong() == nil then return end
+
+	if res == nil then
+		for i=1,2 do
+			local paneDisplay = master:GetChild("PaneDisplayP"..i)
+			local loadingText = paneDisplay:GetChild("Loading")
+			loadingText:settext("Timed Out")
+		end
+
+		return
+	end
 
 	for i=1,2 do
 		local paneDisplay = master:GetChild("PaneDisplayP"..i)
@@ -106,13 +111,23 @@ local GetScoresRequestProcessor = function(res, master)
 					end
 
 					if gsEntry["isSelf"] then
-						SetNameAndScore(
-							GetMachineTag(gsEntry),
-							string.format("%.2f%%", gsEntry["score"]/100),
-							playerName,
-							playerScore
-						)
-						personalRecordSet = true
+						-- Let's check if the GS high score is higher than the local high score
+						local player = PlayerNumber[i]
+						local localScore = GetScoreForPlayer(player)
+						-- GS's score entry is a value like 9823, so we need to divide it by 100 to get 98.23
+						local gsScore = gsEntry["score"] / 100
+
+						-- GetPercentDP() returns a value like 0.9823, so we need to multiply it by 100 to get 98.23
+						if not localScore or gsScore >= localScore:GetPercentDP() * 100 then
+							-- It is! Let's use it instead of the local one.
+							SetNameAndScore(
+								GetMachineTag(gsEntry),
+								string.format("%.2f%%", gsScore),
+								playerName,
+								playerScore
+							)
+							personalRecordSet = true
+						end
 					end
 
 					if gsEntry["isRival"] then
@@ -203,22 +218,10 @@ local PaneItems = {
 -- -----------------------------------------------------------------------
 local af = Def.ActorFrame{ Name="PaneDisplayMaster" }
 
-af[#af+1] = RequestResponseActor("GetScores", 10)..{
+af[#af+1] = RequestResponseActor("GetScores", 10, 17, 50)..{
 	OnCommand=function(self)
 		-- Create variables for both players, even if they're not currently active.
 		self.IsParsing = {false, false}
-		for player in ivalues(GAMESTATE:GetHumanPlayers()) do
-			-- If a profile is joined for this player, try and fetch the API key.
-			-- A non-valid API key will have the field set to the empty string.
-			if PROFILEMAN:GetProfile(player) then
-				ParseGrooveStatsIni(player)
-			end
-		end
-	end,
-	PlayerJoinedMessageCommand=function(self, params)
-		if GAMESTATE:IsHumanPlayer(params.Player) and PROFILEMAN:GetProfile(params.Player) then
-			ParseGrooveStatsIni(params.Player)
-		end
 	end,
 	-- Broadcasted from ./PerPlayer/DensityGraph.lua
 	P1ChartParsingMessageCommand=function(self)	self.IsParsing[1] = true end,
@@ -399,9 +402,9 @@ for player in ivalues(PlayerNumber) do
 		end,
 		SetDefaultCommand=function(self)
 			local SongOrCourse, StepsOrTrail = GetSongAndSteps(player)
-			local machine_score, machine_name = GetNameAndScore(machine_profile, SongOrCourse, StepsOrTrail)
-			self:settext(machine_name or ""):diffuse(Color.Black)
-			DiffuseEmojis(self)
+			local machineScore = GetScoreFromProfile(machine_profile, SongOrCourse, StepsOrTrail)
+			self:settext(machineScore and machineScore:GetName() or "----")
+			DiffuseEmojis(self:ClearAttributes())
 		end
 	}
 
@@ -424,8 +427,12 @@ for player in ivalues(PlayerNumber) do
 		end,
 		SetDefaultCommand=function(self)
 			local SongOrCourse, StepsOrTrail = GetSongAndSteps(player)
-			local machine_score, machine_name = GetNameAndScore(machine_profile, SongOrCourse, StepsOrTrail)
-			self:settext(machine_score or "")
+			local machineScore = GetScoreFromProfile(machine_profile, SongOrCourse, StepsOrTrail)
+			if machineScore ~= nil then
+				self:settext(FormatPercentScore(machineScore:GetPercentDP()))
+			else
+				self:settext("??.??%")
+			end
 		end
 	}
 
@@ -447,13 +454,9 @@ for player in ivalues(PlayerNumber) do
 			end
 		end,
 		SetDefaultCommand=function(self)
-			local SongOrCourse, StepsOrTrail = GetSongAndSteps(player)
-			local player_score, player_name
-			if PROFILEMAN:IsPersistentProfile(player) then
-				player_score, player_name = GetNameAndScore(PROFILEMAN:GetProfile(player), SongOrCourse, StepsOrTrail)
-			end
-			self:settext(player_name or ""):diffuse(Color.Black)
-			DiffuseEmojis(self)
+			local playerScore = GetScoreForPlayer(player)
+			self:settext(playerScore and playerScore:GetName() or "----")
+			DiffuseEmojis(self:ClearAttributes())
 		end
 	}
 
@@ -475,13 +478,12 @@ for player in ivalues(PlayerNumber) do
 			end
 		end,
 		SetDefaultCommand=function(self)
-			local SongOrCourse, StepsOrTrail = GetSongAndSteps(player)
-			local player_score, player_name
-			if PROFILEMAN:IsPersistentProfile(player) then
-				player_score, player_name = GetNameAndScore(PROFILEMAN:GetProfile(player), SongOrCourse, StepsOrTrail)
+			local playerScore = GetScoreForPlayer(player)
+			if playerScore ~= nil then
+				self:settext(FormatPercentScore(playerScore:GetPercentDP()))
+			else
+				self:settext("??.??%")
 			end
-
-			self:settext(player_score or "")
 		end
 	}
 

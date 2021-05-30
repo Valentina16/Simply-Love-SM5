@@ -107,6 +107,7 @@ af2[#af2+1] = LoadFont("Common Normal")..{
 		else
 			self:addx(-136):addy(-41)
 		end
+
 		-- We want black text in Rainbow mode, white otherwise.
 		self:diffuse(DarkUI() and {0, 0, 0, 1} or {1, 1, 1, 1})
 	end,
@@ -116,7 +117,7 @@ af2[#af2+1] = LoadFont("Common Normal")..{
 	end,
 	RedrawCommand=function(self)
 		if SL[pn].Streams.PeakNPS ~= 0 then
-			self:settext(("Peak NPS: %.1f"):format(SL[pn].Streams.PeakNPS))
+			self:settext(("Peak NPS: %.1f"):format(SL[pn].Streams.PeakNPS * SL.Global.ActiveModifiers.MusicRate))
 			self:visible(true)
 		end
 	end,
@@ -233,7 +234,7 @@ for i, row in ipairs(layout) do
 					local streamMeasures, breakMeasures = GetTotalStreamAndBreakMeasures(pn)
 					local totalMeasures = streamMeasures + breakMeasures
 					if streamMeasures == 0 then
-						self:settext("None (0.00%)")
+						self:settext("None (0.0%)")
 					else
 						self:settext(string.format("%d/%d (%0.1f%%)", streamMeasures, totalMeasures, streamMeasures/totalMeasures*100))
 					end

@@ -16,6 +16,13 @@ local SetLeaderboardForPlayer = function(player_num, leaderboard, leaderboardDat
 	local entryNum = 1
 	local rivalNum = 1
 
+	-- Hide the rival and self highlights.
+	-- They will be unhidden and repositioned as needed below.
+	for i=1,3 do
+		leaderboard:GetChild("Rival"..i):visible(false)
+	end
+	leaderboard:GetChild("Self"):visible(false)
+
 	if leaderboardData then
 		if leaderboardData["Name"] then
 			leaderboard:GetChild("Header"):settext(leaderboardData["Name"])
@@ -87,6 +94,24 @@ end
 
 local LeaderboardRequestProcessor = function(res, master)
 	if master == nil then return end
+
+	if res == nil then
+		for i=1, 2 do
+			local pn = "P"..i
+			local leaderboard = master:GetChild(pn.."Leaderboard")
+			for j=1, NumEntries do
+				local entry = leaderboard:GetChild("LeaderboardEntry"..j)
+				if j == 1 then
+					SetEntryText("", "Timed Out", "", "", entry)
+				else
+					-- Empty out the remaining rows.
+					SetEntryText("", "", "", "", entry)
+				end
+			end
+		end
+		return
+	end
+
 	local data = res["status"] == "success" and res["data"] or nil
 
 	for i=1, 2 do
@@ -129,9 +154,9 @@ local LeaderboardRequestProcessor = function(res, master)
 			local leaderboardData = leaderboardList[1]
 			SetLeaderboardForPlayer(i, leaderboard, leaderboardData, master[pn].isRanked)
 		elseif res["status"] == "fail" then
-			for i=1, NumEntries do
-				local entry = leaderboard:GetChild("LeaderboardEntry"..i)
-				if i == 1 then
+			for j=1, NumEntries do
+				local entry = leaderboard:GetChild("LeaderboardEntry"..j)
+				if j == 1 then
 					SetEntryText("", "Failed to Load 😞", "", "", entry)
 				else
 					-- Empty out the remaining rows.
@@ -139,9 +164,9 @@ local LeaderboardRequestProcessor = function(res, master)
 				end
 			end
 		elseif res["status"] == "disabled" then
-			for i=1, NumEntries do
-				local entry = leaderboard:GetChild("LeaderboardEntry"..i)
-				if i == 1 then
+			for j=1, NumEntries do
+				local entry = leaderboard:GetChild("LeaderboardEntry"..j)
+				if j == 1 then
 					SetEntryText("", "Leaderboard Disabled", "", "", entry)
 				else
 					-- Empty out the remaining rows.
@@ -205,7 +230,7 @@ local af = Def.ActorFrame{
 		Text=THEME:GetString("Common", "PopupDismissText"),
 		InitCommand=function(self) self:xy(_screen.cx, _screen.h-50):zoom(1.1) end
 	},
-	RequestResponseActor("Leaderboard", 10)..{
+	RequestResponseActor("Leaderboard", 10, 17, 50)..{
 		SendLeaderboardRequestCommand=function(self)
 			if not IsServiceAllowed(SL.GrooveStats.Leaderboard) then return end
 

@@ -34,13 +34,13 @@ local decorations = LoadActor(THEME:GetPathB("ScreenWithMenuElements", "decorati
 -- 	InitCommand=function(self)
 -- 		timestamp_bmt = self
 
--- 		self:x(_screen.cx):horizalign(center)
--- 		self:zoom(0.18)
--- 	end,
--- 	OnCommand=function(self)
--- 		-- y offset for ScreenEvaluationStage or ScreenEvaluationNonstop
--- 		-- or anything else that inherits from ScreenEvaluation
--- 		self:y(_screen.h - 15)
+	-- 	self:x(_screen.cx):horizalign(center)
+	-- 	self:zoom(0.18)
+	-- end,
+-- OnCommand=function(self)
+-- 	-- y offset for ScreenEvaluationStage or ScreenEvaluationNonstop
+-- 	-- or anything else that inherits from ScreenEvaluation
+-- 	self:y(_screen.h - 17)
 
 -- 		-- use a slightly diffrent y offset for ScreenEvaluationSummary
 -- 		local screen = SCREENMAN:GetTopScreen()
@@ -50,13 +50,10 @@ local decorations = LoadActor(THEME:GetPathB("ScreenWithMenuElements", "decorati
 -- 			end
 -- 		end
 
--- 		local textColor = Color.White
--- 		if ThemePrefs.Get("RainbowMode") then
--- 			textColor = Color.Black
--- 		end
--- 		if ThemePrefs.Get("VisualStyle") == "SRPG5" then
--- 			textColor = color(SL.SRPG5.TextColor)
--- 		end
+		-- local textColor = Color.White
+		-- if ThemePrefs.Get("RainbowMode") then
+		-- 	textColor = Color.Black
+		-- end
 
 -- 		self:diffuse(textColor)
 -- 		self:playcommand("Refresh")

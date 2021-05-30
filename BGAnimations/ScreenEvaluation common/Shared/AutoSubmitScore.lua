@@ -31,6 +31,12 @@ end
 local AutoSubmitRequestProcessor = function(res, overlay)
 	local P1SubmitText = overlay:GetChild("AutoSubmitMaster"):GetChild("P1SubmitText")
 	local P2SubmitText = overlay:GetChild("AutoSubmitMaster"):GetChild("P2SubmitText")
+	if res == nil then
+		if P1SubmitText then P1SubmitText:queuecommand("TimedOut") end
+		if P2SubmitText then P2SubmitText:queuecommand("TimedOut") end
+		return
+	end
+
 	local panes = overlay:GetChild("Panes")
 	local hasRpgData = false
 
@@ -177,7 +183,7 @@ end
 
 local af = Def.ActorFrame {
 	Name="AutoSubmitMaster",
-	RequestResponseActor("AutoSubmit", 10)..{
+	RequestResponseActor("AutoSubmit", 30, 17, 50)..{
 		OnCommand=function(self)
 			local sendRequest = false
 			local data = {
@@ -243,16 +249,10 @@ local af = Def.ActorFrame {
 	}
 }
 
-
-
 local textColor = Color.White
 local shadowLength = 0
 if ThemePrefs.Get("RainbowMode") then
 	textColor = Color.Black
-end
-if ThemePrefs.Get("VisualStyle") == "SRPG5" then
-	textColor = color(SL.SRPG5.TextColor)
-	shadowLength = 0.4
 end
 
 af[#af+1] = LoadFont("Common Normal").. {
@@ -278,6 +278,9 @@ af[#af+1] = LoadFont("Common Normal").. {
 	ServiceDisabledCommand=function(self)
 		self:settext("Submit Disabled")
 	end,
+	TimedOutCommand=function(self)
+		self:settext("Timed Out")
+	end
 }
 
 af[#af+1] = LoadFont("Common Normal").. {
@@ -303,6 +306,9 @@ af[#af+1] = LoadFont("Common Normal").. {
 	ServiceDisabledCommand=function(self)
 		self:settext("Submit Disabled")
 	end,
+	TimedOutCommand=function(self)
+		self:settext("Timed Out")
+	end
 }
 
 af[#af+1] = Def.Sprite{
